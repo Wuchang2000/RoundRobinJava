@@ -48,11 +48,33 @@ class nodo {
     }
 }
 
+class gantt {
+    public String id;
+    public int tInicia, tTermina, tllega;
+
+    public gantt (proceso data, int tInicia, int tTermina, int tllega){
+        this.id = data.id;
+        this.tllega = tllega;
+        this.tInicia = tInicia;
+        if (tTermina > 4) {
+            this.tTermina = this.tInicia+4;
+        }else{
+            this.tTermina = this.tInicia+tTermina;
+        }
+    }
+
+    public String toString(){
+        return this.id+" tini: "+this.tInicia+" tfin: "+this.tTermina+" tllega: "+this.tllega;
+    }
+}
+
 class colaProcesos {
 
     private nodo iniL, finL, iniE, finE;
     private int tiempoTotal, memoriaTotal, memoriaUsada, quantum;
     private ArrayList<proceso> planeado = new ArrayList<proceso>();
+    public ArrayList<gantt> diagrama = new ArrayList<gantt>();
+    private ArrayList<String> ids = new ArrayList<String>();
     // Constructor
     public colaProcesos(int memoriaTotal, int quantum){
         this.finL = null;
@@ -62,6 +84,7 @@ class colaProcesos {
     }
     // Metodo para insertar un nuevo proceso
     public void inserta(proceso data){
+        this.ids.add(data.id);
         // Valida si el tiempo de llegada es 0
         if (data.tllega != 0) {
             // Si es 0 se inserta en una cola de planificados
@@ -145,6 +168,9 @@ class colaProcesos {
         while (iniE != null) {
             boolean restado = false;
             mostrarColas();
+            // Añade los procesos a una lista para poder realizar los calculos de tiempos
+            diagrama.add(new gantt(iniE.getData(), tiempoTotal,
+            iniE.getData().teje, iniE.getData().tllega));
             // Este ciclo realiza contabiliza el quantum
             for (int i = 0; i < quantum; i++) {
                 // Si el tiempo de ejecucion no a llegado a 0 se reduce su tiempo en
@@ -182,7 +208,33 @@ class colaProcesos {
             // Se avanza al siguiente proceso
             iniE = iniE.getSig();
         }
+        // Calculamos los tiempos de espera, respuesta y ejecucion
+        calcula();
     }
+
+    // Metodo para calular los tiempos de espera, respuesta y ejecucion
+    private void calcula(){
+        int indice = 0;
+        float sumEsp = 0;
+        // Calculamos el tiempo de espera
+        // Recorremos el conjunto de identificadores
+        for (int i = 0; i < ids.size(); i++) {
+            int sumSube = 0;
+            // Encontramos la ultima vez que sube
+            for (int j = 0; j < diagrama.size(); j++) {
+                if (ids.get(i) == diagrama.get(j).id) {
+                    indice = j;
+                    sumSube += diagrama.get(indice).tTermina-diagrama.get(indice).tInicia;
+                }
+            }
+            // Ultima rafaga
+            sumSube -= diagrama.get(indice).tTermina-diagrama.get(indice).tInicia;
+            // Sumamos TultimoSube-Tllega-TyaEjecutado
+            sumEsp += diagrama.get(indice).tInicia-diagrama.get(indice).tllega-sumSube;
+        }
+        System.out.println("Tiempo de espera: "+sumEsp/ids.size());
+    }
+
     // Metodo que muestra el estado de cada cola de datos, el tiempo
     // de total y el uso de memoria
     private void mostrarColas(){
@@ -222,6 +274,7 @@ class colaProcesos {
         cls();
     }
 }
+
 // Clase principal que inicializa todo
 public class Main {
     public static void main(String []args) {
