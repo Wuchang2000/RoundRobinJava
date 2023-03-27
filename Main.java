@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class proceso {
     // Atributos
     public String id, nombre;
@@ -23,7 +25,6 @@ class nodo {
     // Atributos
     private proceso data;
     private nodo sig;
-    private nodo ant;
     //Construtor
     public nodo(proceso data){
         this.data = data;
@@ -41,96 +42,128 @@ class nodo {
         return sig;
     }
 
-    public nodo getAnt(){
-        return ant;
-    }
-
     public void setSig(nodo sig){
         this.sig = sig;
-    }
-
-    public void setAnt(nodo ant){
-        this.ant = ant;
     }
 }
 
 class colaProcesos {
 
-    private nodo ini, fin;
-    public int contador;
+    private nodo iniL, finL, iniE, finE;
+    private int contador, memoriaTotal, memoriaUsada, quantum;
 
-    public colaProcesos(){
-        this.fin = null;
-        this.ini = null;
+    public colaProcesos(int memoriaTotal, int quantum){
+        this.finL = null;
+        this.iniL = null;
+        this.memoriaTotal = memoriaTotal;
+        this.quantum = quantum;
     }
 
-    public void insertar(proceso data){
+    public void insertarL(proceso data){
         nodo nuevo = new nodo(data);
-        if(ini == null){
-            ini = nuevo;
-            // ini.setSig(null);
-            // ini.setAnt(null);
-            fin = nuevo;
+        if(iniL == null){
+            iniL = nuevo;
+            finL = nuevo;
         }else{
-            fin.setSig(nuevo);
-            // nuevo.setSig(null);
-            // nuevo.setAnt(fin);
-            fin = nuevo;
+            finL.setSig(nuevo);
+            finL = nuevo;
+        }
+    }
+    
+    private void insertarE(proceso data){
+        nodo nuevo = new nodo(data);
+        if(iniE == null){
+            iniE = nuevo;
+            finE = nuevo;
+        }else{
+            finE.setSig(nuevo);
+            finE = nuevo;
         }
     }
 
-    public void procesa(){
-        while (ini != null) {
-            System.out.println(ini.getData().toString());
-            for (int i = 0; i < 4; i++) {
-                if (ini.getData().teje != 0) {
-                    ini.redux();
+    public void rr(){
+        expande();
+        procesa();
+    }
+
+    private void expande(){
+        while (iniL != null) {
+            if (memoriaUsada+iniL.getData().size > memoriaTotal) {
+                break;
+            }
+            insertarE(iniL.getData());
+            memoriaUsada += iniL.getData().size;
+            iniL = iniL.getSig();
+        }
+    }
+
+    private void cls(){
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();
+    }
+
+    private void procesa(){
+        while (iniE != null) {
+            cls();
+            mostrarColas();
+            System.out.println("Press Any Key To Continue...");
+            new java.util.Scanner(System.in).nextLine();
+            cls();
+            // System.out.println(iniE.getData().toString());
+            for (int i = 0; i < quantum; i++) {
+                if (iniE.getData().teje != 0) {
+                    iniE.redux();
                     this.contador++;
-                    System.out.println(ini.getData().id+" en ejecucion "+ini.getData().teje+" msg");
+                    // System.out.println(iniE.getData().id+" en ejecucion "+iniE.getData().teje+" msg");
                 }else{
+                    memoriaUsada -= iniE.getData().size;
+                    expande();
                     break;
                 }
             }
-            if (ini.getData().teje != 0) {
-                insertar(ini.getData());
+            if (iniE.getData().teje != 0) {
+                insertarE(iniE.getData());
+            }else{
+                memoriaUsada -= iniE.getData().size;
+                expande();
             }
-            ini = ini.getSig();
+            iniE = iniE.getSig();
         }
     }
 
-    // public void extrae(String id) {
-    //     nodo actual = ini;
-    //     nodo anterior = null;
-    //     boolean flag = false;
-    //     do{
-    //         if (actual.getData().id == id){
-    //             flag = true;
-    //             if(actual == ini){
-    //                 ini = ini.getSig();
-    //                 fin = ini.getAnt();
-    //                 ini = fin.getSig();
-    //             }else if(actual == fin){
-    //                 fin = anterior;
-    //                 ini = fin.getSig();
-    //                 fin = ini.getAnt();
-    //             }else{
-    //                 anterior.setSig(actual.getSig());
-    //                 anterior = actual.getSig().getAnt();
-    //             }
-    //         }
-    //         anterior = actual;
-    //         actual = actual.getSig();
-    //     } while (actual != null && flag == false);
-    // }
+    private void mostrarColas(){
+        ArrayList<String> colaVolteada = new ArrayList<String>();
+        nodo temp = iniL;
+        while (temp != null) {
+            colaVolteada.add(temp.getData().id);
+            temp = temp.getSig();
+        }
+        System.out.println("Cola de procesos listos");
+        for (int i = colaVolteada.size()-1; i >= 0; i--) {
+            System.out.print(colaVolteada.get(i)+" ");
+        }
+        System.out.println("");
+        colaVolteada.clear();
+        temp = iniE;
+        while (temp != null) {
+            colaVolteada.add(temp.getData().id);
+            temp = temp.getSig();
+        }
+        System.out.println("Cola de procesos listos para ejecucion");
+        for (int i = colaVolteada.size()-1; i >= 0; i--) {
+            System.out.print(colaVolteada.get(i)+" ");
+        }
+        System.out.println("");
+    }
 }
 
 public class Main {
     public static void main(String []args) {
-        colaProcesos uno = new colaProcesos();
-        uno.insertar(new proceso("1", "powershell",0,14,0,0));
-        uno.insertar(new proceso("2", "cmd",0,4,0,0));
-        uno.insertar(new proceso("3", "Chrome",0,20,0,0));
-        uno.procesa();
-        System.out.println("El tiempo total fue: "+uno.contador);
+        colaProcesos uno = new colaProcesos(1000, 4);
+        uno.insertarL(new proceso("1", "powershell",300,14,0,0));
+        uno.insertarL(new proceso("2", "cmd",400,4,0,0));
+        uno.insertarL(new proceso("3", "Chrome",100,20,0,0));
+        uno.insertarL(new proceso("4", "vscode",500,20,0,0));
+        uno.rr();
     }
 }
