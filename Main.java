@@ -215,7 +215,7 @@ class colaProcesos {
     // Metodo para calular los tiempos de espera, respuesta y ejecucion
     private void calcula(){
         int indice = 0;
-        float sumEsp = 0;
+        float sumEsp = 0, sumResp = 0, sumEje = 0;
         // Calculamos el tiempo de espera
         // Recorremos el conjunto de identificadores
         for (int i = 0; i < ids.size(); i++) {
@@ -233,6 +233,35 @@ class colaProcesos {
             sumEsp += diagrama.get(indice).tInicia-diagrama.get(indice).tllega-sumSube;
         }
         System.out.println("Tiempo de espera: "+sumEsp/ids.size());
+        // Calculamos el tiempo de respuesta
+        // Recorremos el conjunto de identificadores
+        for (int i = 0; i < ids.size(); i++) {
+            // Encontramos la ultima vez que sube
+            for (int j = 0; j < diagrama.size(); j++) {
+                if (ids.get(i) == diagrama.get(j).id) {
+                    indice = j;
+                    break;
+                }
+            }
+            // Primera rafaga
+            // Sumamos TPrimeraVezSube-Tllega
+            sumResp += diagrama.get(indice).tInicia-diagrama.get(indice).tllega;
+        }
+        System.out.println("Tiempo de respuesta: "+sumResp/ids.size());
+        // Calculamos el tiempo de ejecucion
+        // Recorremos el conjunto de identificadores
+        for (int i = 0; i < ids.size(); i++) {
+            // Encontramos la ultima vez que sube
+            for (int j = 0; j < diagrama.size(); j++) {
+                if (ids.get(i) == diagrama.get(j).id) {
+                    indice = j;
+                }
+            }
+            // Ultima rafaga
+            // Sumamos TUltimoSubeFinal-Tllega
+            sumEje += diagrama.get(indice).tTermina-diagrama.get(indice).tllega;
+        }
+        System.out.println("Tiempo de respuesta: "+sumEje/ids.size());
     }
 
     // Metodo que muestra el estado de cada cola de datos, el tiempo
@@ -279,15 +308,22 @@ class colaProcesos {
 public class Main {
     public static void main(String []args) {
         colaProcesos uno = new colaProcesos(1000, 4);
-        uno.inserta(new proceso("1", "powershell",0,12,0,2));
-        uno.inserta(new proceso("2", "cmd",0,10,0,4));
-        uno.inserta(new proceso("3", "Chrome",0,7,0,6));
-        uno.inserta(new proceso("4", "vscode",0,4,0,8));
-        uno.inserta(new proceso("5", "lolipop",0,2,0,10));
+        // Ejercicio 21 RR
+        // uno.inserta(new proceso("1", "powershell",0,25,0,0));
+        // uno.inserta(new proceso("2", "cmd",0,9,0,4));
+        // uno.inserta(new proceso("3", "Chrome",0,12,0,8));
+        // uno.inserta(new proceso("4", "vscode",0,8,0,9));
+        // Ejercicio 22 RR
         // uno.inserta(new proceso("1", "powershell",0,6,0,1));
         // uno.inserta(new proceso("2", "cmd",0,18,0,4));
         // uno.inserta(new proceso("3", "Chrome",0,12,0,6));
         // uno.inserta(new proceso("4", "vscode",0,17,0,7));
+        // Ejercicio 3 REPASO RR
+        // uno.inserta(new proceso("1", "powershell",0,12,0,2));
+        // uno.inserta(new proceso("2", "cmd",0,10,0,4));
+        // uno.inserta(new proceso("3", "Chrome",0,7,0,6));
+        // uno.inserta(new proceso("4", "vscode",0,4,0,8));
+        // uno.inserta(new proceso("5", "lolipop",0,2,0,10));
         uno.rr();
     }
 }
