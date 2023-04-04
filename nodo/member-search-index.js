@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"<Unnamed>","c":"nodo","l":"data"},{"p":"<Unnamed>","c":"nodo","l":"getData()"},{"p":"<Unnamed>","c":"nodo","l":"getSig()"},{"p":"<Unnamed>","c":"nodo","l":"nodo(proceso)","u":"%3Cinit%3E(proceso)"},{"p":"<Unnamed>","c":"nodo","l":"redux()"},{"p":"<Unnamed>","c":"nodo","l":"setSig(nodo)"},{"p":"<Unnamed>","c":"nodo","l":"sig"}];updateSearchResults();
