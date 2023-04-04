@@ -101,6 +101,10 @@ class colaProcesos {
     }
     // Metodo para insertar un nuevo proceso
     public void inserta(proceso data){
+        if (ids.contains(data.id)) {
+            System.out.println("Este id ya existe");
+            return;
+        }
         this.ids.add(data.id);
         // Valida si el tiempo de llegada es 0
         if (data.tllega != 0) {
@@ -192,11 +196,11 @@ class colaProcesos {
                 iniE.getData().teje, iniE.getData().tllega));
                 // Este ciclo realiza contabiliza el quantum
                 for (int i = 0; i < quantum; i++) {
-                    System.out.println(iniE.getData().id+" en ejecución "+iniE.getData().teje+"msg");
                     // Si el tiempo de ejecucion no a llegado a 0 se reduce su tiempo en
                     // una unidad y se aumenta el tiempo total, se revisa si ya es tiempo
                     // de llegada de un proceso
                     if (iniE.getData().teje != 0) {
+                        System.out.println(iniE.getData().id+" en ejecución "+iniE.getData().teje+"msg");
                         iniE.redux();
                         this.tiempoTotal++;
                         expandePost();
@@ -315,7 +319,11 @@ class colaProcesos {
         }
         System.out.println("");
         System.out.println("Proceso en ejecucion");
-        System.out.println(colaVolteada.get(0));
+        if (colaVolteada.isEmpty() != true) {
+            System.out.println(colaVolteada.get(0));
+        }else{
+            System.out.println("");
+        }
         System.out.println("Tiempo total: "+tiempoTotal);
         System.out.println("Memoria restante: "+(memoriaTotal-memoriaUsada)+"\n\n");
     }
@@ -346,22 +354,6 @@ public class Main {
         }
         System.out.println("\n");
         input.close();
-        // Ejercicio 21 RR
-        // uno.inserta(new proceso("1", "powershell",0,25,0,0));
-        // uno.inserta(new proceso("2", "cmd",0,9,0,4));
-        // uno.inserta(new proceso("3", "Chrome",0,12,0,8));
-        // uno.inserta(new proceso("4", "vscode",0,8,0,9));
-        // Ejercicio 22 RR
-        // uno.inserta(new proceso("1", "powershell",0,6,0,1));
-        // uno.inserta(new proceso("2", "cmd",0,18,0,4));
-        // uno.inserta(new proceso("3", "Chrome",0,12,0,6));
-        // uno.inserta(new proceso("4", "vscode",0,17,0,7));
-        // Ejercicio 3 REPASO RR
-        // uno.inserta(new proceso("1", "powershell",0,12,0,2));
-        // uno.inserta(new proceso("2", "cmd",0,10,0,4));
-        // uno.inserta(new proceso("3", "Chrome",0,7,0,6));
-        // uno.inserta(new proceso("4", "vscode",0,4,0,8));
-        // uno.inserta(new proceso("5", "lolipop",0,2,0,10));
         uno.rr();
     }
 }
