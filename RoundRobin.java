@@ -15,7 +15,7 @@ public class RoundRobin {
     private ArrayList<String> ids = new ArrayList<String>();
     
     /**
-     * Inicializa la cola de procesos listos y define el tamaño de RAM y el quatum
+     * Inicializa la cola de procesos listos y define el tamaño de RAM y el quantum
      * @param memoriaTotal El parametro sera la memoria RAM simulada
      * @param quantum El parametro sera el tiempo en msg que se ejecuta cada proceso
      */
@@ -27,14 +27,18 @@ public class RoundRobin {
     }
 
     /**
+     * Metodo que busca si el id a registrar ya existe en los procesos actuales 
+     * @param id Identificador que se intenta registar
+     */
+    public boolean searchIds(String id){
+        return this.ids.contains(id);
+    }
+
+    /**
      * Metodo que inserta el nuevo proceso 
      * @param data El parametro sera un objeto proceso
      */
     public void inserta(proceso data){
-        if (ids.contains(data.id)) {
-            System.out.println("Este id ya existe");
-            return;
-        }
         this.ids.add(data.id);
         // Valida si el tiempo de llegada es 0
         if (data.tllega != 0) {
@@ -134,7 +138,7 @@ public class RoundRobin {
     private void procesa(){
         // Ciclo que mantiene la espera en caso de que no 
         // halla procesos listos para ejecucion pero si planeados
-        while (planeado.isEmpty() != true) {
+        while (planeado.isEmpty() != true || iniE != null) {
             // Si aun no llega ningun proceso se cuenta el tiempo
             while (iniE == null) {
                 this.tiempoTotal++;
@@ -258,7 +262,8 @@ public class RoundRobin {
         System.out.println("Cola de procesos listos");
         // Si imprime el arreglo al reves
         for (int i = colaVolteada.size()-1; i >= 0; i--) {
-            System.out.print(colaVolteada.get(i)+" ");
+            //formatoColas(colaVolteada.get(i));
+            System.out.print(colaVolteada.get(i)+" | ");
         }
         System.out.println("");
         colaVolteada.clear();
@@ -271,7 +276,8 @@ public class RoundRobin {
         System.out.println("Cola de procesos listos para ejecucion");
         // Si imprime el arreglo al reves
         for (int i = colaVolteada.size()-1; i > 0; i--) {
-            System.out.print(colaVolteada.get(i)+" ");
+            //formatoColas(colaVolteada.get(i));
+            System.out.print(colaVolteada.get(i)+" | ");
         }
         System.out.println("");
         System.out.println("Proceso en ejecucion");
@@ -281,6 +287,7 @@ public class RoundRobin {
             System.out.println("");
         }
         System.out.println("Tiempo total: "+tiempoTotal);
-        System.out.println("Memoria restante: "+(memoriaTotal-memoriaUsada)+"\n\n");
+        System.out.println("Memoria restante: "+(memoriaTotal-memoriaUsada));
+        System.out.println("\n\n\n─────────────────────────────────────────Información actualizada─────────────────────────────────────────────");
     }
 }
