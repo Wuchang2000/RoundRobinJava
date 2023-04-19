@@ -148,6 +148,7 @@ public class RoundRobin {
             while (iniE != null) {
                 boolean restado = false;
                 mostrarColas();
+                expande();
                 // Añade los procesos a una lista para poder realizar los calculos de tiempos
                 diagrama.add(new gantt(iniE.getData(), tiempoTotal,
                 iniE.getData().teje, iniE.getData().tllega, quantum));
@@ -175,7 +176,7 @@ public class RoundRobin {
                 // En caso de todavia tener tiempo de ejecucion se vuelve a colocar
                 // en la cola de procesos listos para ejecucion
                 if (iniE.getData().teje != 0) {
-                    insertaE(iniE.getData());
+                    insertaL(iniE.getData());
                 // En caso de ya no tener tiempo de ejecucion
                 }else{
                     // Se revisa si ya se libero la memoria del proceso
