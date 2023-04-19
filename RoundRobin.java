@@ -200,6 +200,7 @@ public class RoundRobin {
     private void calcula(){
         int indice = 0;
         float sumEsp = 0, sumResp = 0, sumEje = 0;
+        System.out.println("\n\n\n─────────────────────────────────────────Calculo de tiempos─────────────────────────────────────────────");
         // Calculamos el tiempo de espera
         // Recorremos el conjunto de identificadores
         for (int i = 0; i < ids.size(); i++) {
