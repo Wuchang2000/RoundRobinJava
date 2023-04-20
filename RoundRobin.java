@@ -42,7 +42,7 @@ public class RoundRobin {
         this.ids.add(data.id);
         // Valida si el tiempo de llegada es 0
         if (data.tllega != 0) {
-            // Si es 0 se inserta en una cola de planificados
+            // Si no es 0 se inserta en una cola de planificados
             insertaP(data);
             return;
         }
@@ -247,7 +247,7 @@ public class RoundRobin {
             // Sumamos TUltimoSubeFinal-Tllega
             sumEje += diagrama.get(indice).tTermina-diagrama.get(indice).tllega;
         }
-        System.out.println("Tiempo de respuesta: "+sumEje/ids.size());
+        System.out.println("Tiempo de ejecucion: "+sumEje/ids.size());
     }
 
     /**
