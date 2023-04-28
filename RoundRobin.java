@@ -179,13 +179,13 @@ public class RoundRobin {
                     insertaL(iniE.getData());
                 // En caso de ya no tener tiempo de ejecucion
                 }else{
-                    // Se revisa si ya se libero la memoria del proceso
-                    if (restado == false) {
-                        memoriaUsada -= iniE.getData().size;
-                    }
                     // Se revisa si ya es tiempo de llegada de un proceso
                     expandePost();
                     expande();
+                }
+                // Se revisa si ya se libero la memoria del proceso
+                if (restado == false) {
+                    memoriaUsada -= iniE.getData().size;
                 }
                 // Se avanza al siguiente proceso
                 iniE = iniE.getSig();
